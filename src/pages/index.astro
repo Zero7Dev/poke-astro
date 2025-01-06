@@ -1,11 +1,32 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import type { PokeListResponseAPI } from "../interfaces/poke.response";
+import Welcome from "../components/Welcome.astro";
+import Layout from "../layouts/Layout.astro";
+import PokemonCard from "../components/Pokemons/PokemonCard.astro";
+const res = await fetch("https://pokeapi.co/api/v2/pokemon");
+const data = (await res.json()) as PokeListResponseAPI;
+console.log(data);
+
+interface Props {
+  title: string;
+}
+const { title } = Astro.props;
 
 // Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
 // Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="Pokes-List">
+  <h1 class="">Listado de pokemons</h1>
+  <hr />
+  <section
+    aria-label="listado de pokemons"
+    class="grid  grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-4 mt-6"
+  >
+    {
+      data.results.map((poke) => (
+        <PokemonCard name={poke.name} url={poke.url} />
+      ))
+    }
+  </section>
 </Layout>
